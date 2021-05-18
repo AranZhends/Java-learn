@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+   <div id="app">
+     <h2>用户登录</h2>
+       <!--绑定表单提交事件-->
+     <form v-on:submit.prevent="login()">
+         用户名:<input type="text" v-model="username">
+         <br><br>
+         密码:<input type="password" v-model="password">
+         <p style="color: red" >{{message}}</p>
+         <br><br>
+         <input type="submit" value="登陆">
+     </form>
+   </div>
+   <script>
+       let  app = new Vue({
+          el:"#app",
+           //双向绑定
+          data:{
+              username:"",
+              password:"",
+              message: "",
+          } ,
+           methods:{
+              login:function () {
+                  //alert(this.username+","+this.password);
+                  $.ajax({
+                      url: "login",
+                      type: "post",
+                      data: "username="+app.username + "&password=" + app.password,
+                      context: this,
+                      success: function(data, status) {
+                         //如果校验操作（登陆）成功，跳转到首页
+                          if (data.ok) {
+                              window.location.href = "index.html";
+                          }else {
+                          //登陆失败，提示错误信息
+                          app.message = data.msg;
+                          }
+                      }
+                  })
+              }
+           }
+       });
+   </script>
+</body>
+</html>
